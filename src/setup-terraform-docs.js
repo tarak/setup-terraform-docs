@@ -73,8 +73,7 @@ async function extractTFArchive(pathToCLIFile, platform) {
   if (platform === 'windows') {
     const pathToCLI = await tc.extractZip(pathToCLIFile)
     return pathToCLI
-  }
-  else {
+  } else {
     const pathToCLI = await tc.extractTar(pathToCLIFile)
     return pathToCLI
   }

@@ -36822,6 +36822,7 @@ function wrappy (fn, cb) {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const os = __nccwpck_require__(2037)
+const fs = __nccwpck_require__(7147)
 const path = __nccwpck_require__(1017)
 const fetch = __nccwpck_require__(467)
 
@@ -36890,16 +36891,30 @@ async function getTerraformDocsVersion(inputVersion) {
   return inputVersion
 }
 
+async function extractTFArchive(pathToCLIFile, platform) {
+  core.debug('Extracting terraform-docs CLI archive')
+  if (platform === 'windows') {
+    const pathToCLI = await tc.extractZip(pathToCLIFile)
+    return pathToCLI
+  } else {
+    const pathToCLI = await tc.extractTar(pathToCLIFile)
+    return pathToCLI
+  }
+}
+
 async function downloadCLI(url) {
   core.debug(`Downloading terraform-docs CLI from ${url}`)
   const platform = mapOS(os.platform())
   const pathToCLIFile = await tc.downloadTool(url)
+  // try {
+  //   if (fs.existsSync(pathToCLIFile)) {
+  //     core.info("Downloaded terraform-docs CLI from ${url}`")
+  //   }
+  // } catch(err) {
+  //   core.error(err)
+  // }
+  const pathToCLI = await extractTFArchive(pathToCLIFile, platform)
 
-  core.debug('Extracting terraform-docs CLI zip file')
-  const pathToCLI =
-    platform === 'windows'
-      ? await tc.extractZip(pathToCLIFile)
-      : await tc.extractTar(pathToCLIFile)
   core.debug(`terraform-docs CLI path is ${pathToCLI}.`)
 
   if (!pathToCLIFile || !pathToCLI) {

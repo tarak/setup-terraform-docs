@@ -29,10 +29,26 @@ describe('Mock tests', () => {
     await setup()
 
     // const platform = mapOS(os.platform())
-    if (os.platform() === 'windows' || os.platform() === 'win32') {
-      expect(tc.extractZip).toHaveBeenCalledTimes(1)
-    } else {
-      expect(tc.extractTar).toHaveBeenCalledTimes(1)
+    // if (os.platform() === 'windows' || os.platform() === 'win32') {
+    //   expect(tc.extractZip).toHaveBeenCalledTimes(1)
+    // } else {
+    //   expect(tc.extractTar).toHaveBeenCalledTimes(1)
+    // }
+    let zipCount
+    let tarCount
+    try {
+      if (os.platform() === 'windows' || os.platform() === 'win32') {
+        zipCount = 1
+        tarCount = 0
+      } else {
+        zipCount = 0
+        tarCount = 1
+      }
+    } catch {
+      // ignore errors
+    } finally {
+      expect(tc.extractZip).toHaveBeenCalledTimes(zipCount)
+      expect(tc.extractTar).toHaveBeenCalledTimes(tarCount)
     }
   })
 
