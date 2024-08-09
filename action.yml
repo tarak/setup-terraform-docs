@@ -10,9 +10,11 @@ inputs:
       'Target architecture for Node to use. Examples: x86, x64. Will use system
       architecture by default.'
   github_token:
-    description: GitHub token - used when getting the latest version of terraform-docs
+    description:
+      GitHub token - used when getting the latest version of terraform-docs
     required: false
-    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
+    default:
+      ${{ github.server_url == 'https://github.com' && github.token || '' }}
   terraform_docs_wrapper:
     description:
       Installs a wrapper script to wrap subsequent calls to `terraform-docs` and
