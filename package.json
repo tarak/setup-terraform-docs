@@ -28,7 +28,7 @@
     "bundle": "npm run format:write && npm run package",
     "ci-test": "npx jest",
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
-    "format:write": "npx prettier --write .",
+    "format:write": "npx prettier --write . && npx standard --fix",
     "format:check": "npx prettier --check .",
     "lint": "npx eslint --fix . src __tests__ -c ./.github/linters/.eslintrc.yml",
     "package": "npx ncc build wrapper/terraform-docs.js --out wrapper/dist && npx ncc build src/setup-terraform-docs.js -o dist --no-source-map-register",
@@ -39,6 +39,11 @@
   "license": "MIT",
   "eslintConfig": {
     "extends": "./.github/linters/.eslintrc.yml"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
   },
   "jest": {
     "verbose": true,

@@ -36898,8 +36898,8 @@ async function installWrapper(pathToCLI) {
 
   // Rename terraform-docs to terraform-docs-bin
   try {
-    source = [pathToCLI, `terraform-docs`].join(path.sep)
-    target = [pathToCLI, `terraform-docs-bin`].join(path.sep)
+    source = [pathToCLI, 'terraform-docs'].join(path.sep)
+    target = [pathToCLI, 'terraform-docs-bin'].join(path.sep)
     core.debug(`Moving ${source} to ${target}.`)
     await io.mv(source, target)
   } catch (e) {

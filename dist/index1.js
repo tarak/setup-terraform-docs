@@ -28104,7 +28104,7 @@ async function checkTFDocs() {
   // throws if `which` does not find a result
   return io.which(pathToCLI, true)
 }
-/*eslint no-extra-semi: "off"*/
+/* eslint no-extra-semi: "off" */
 ;(async () => {
   // This will fail if terraform-docs isn't found, which is what we want
   await checkTFDocs()
