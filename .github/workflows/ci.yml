@@ -28,6 +28,13 @@ jobs:
           node-version-file: .node-version
           cache: npm
 
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install Dependencies
         id: npm-ci
         run: npm ci
@@ -58,6 +65,7 @@ jobs:
         uses: ./
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          terraform_docs_wrapper: true
 
       - name: Validate
         run: terraform-docs -v
