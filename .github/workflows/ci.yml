@@ -107,7 +107,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate
-        run: terraform-docs -v
+        run: ./terraform-docs -v
 
       # - name: Print Output
       #   id: output
