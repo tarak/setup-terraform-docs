@@ -36844,6 +36844,19 @@ function mapArch(arch) {
 }
 
 /**
+ * Get the extension of the file to download
+ * @param {string} os - https://nodejs.org/api/os.html#os_os_arch
+ * @returns {string}
+ */
+function mapExtension(platform) {
+  if (platform === 'windows') {
+    return 'zip'
+  } else {
+    return 'tar.gz'
+  }
+}
+
+/**
  * Get the GitHub OS name
  * @param {string} osPlatform - https://nodejs.org/api/os.html#os_os_platform
  * @returns {string}
@@ -36879,13 +36892,17 @@ async function getTerraformDocsVersion(inputVersion) {
 
 async function downloadCLI(url) {
   core.debug(`Downloading terraform-docs CLI from ${url}`)
-  const pathToCLIZip = await tc.downloadTool(url)
+  const platform = mapOS(os.platform())
+  const pathToCLIFile = await tc.downloadTool(url)
 
   core.debug('Extracting terraform-docs CLI zip file')
-  const pathToCLI = await tc.extractZip(pathToCLIZip)
+  const pathToCLI =
+    platform === 'windows'
+      ? await tc.extractZip(pathToCLIFile)
+      : await tc.extractTar(pathToCLIFile)
   core.debug(`terraform-docs CLI path is ${pathToCLI}.`)
 
-  if (!pathToCLIZip || !pathToCLI) {
+  if (!pathToCLIFile || !pathToCLI) {
     throw new Error(`Unable to download terraform-docs from ${url}`)
   }
 
@@ -36933,11 +36950,13 @@ async function run() {
     const version = await getTerraformDocsVersion(inputVersion)
     const platform = mapOS(os.platform())
     const arch = mapArch(os.arch())
+    const extension = mapExtension(platform)
 
     core.debug(
       `Getting download URL for terraform-docs version ${version}: ${platform} ${arch}`
     )
-    const url = `https://github.com/terraform-docs/terraform-docs/releases/download{version}/terraform-docs{version}-${platform}-${arch}.zip`
+
+    const url = `https://github.com/terraform-docs/terraform-docs/releases/download/${version}/terraform-docs-${version}-${platform}-${arch}.${extension}`
 
     const pathToCLI = await downloadCLI(url)
 

@@ -1,4 +1,5 @@
 const os = require('os')
+const fs = require('fs')
 const path = require('path')
 const fetch = require('node-fetch')
 
@@ -18,6 +19,19 @@ function mapArch(arch) {
     x64: 'amd64'
   }
   return mappings[arch] || arch
+}
+
+/**
+ * Get the extension of the file to download
+ * @param {string} os - https://nodejs.org/api/os.html#os_os_arch
+ * @returns {string}
+ */
+function mapExtension(platform) {
+  if (platform === 'windows') {
+    return 'zip'
+  } else {
+    return 'tar.gz'
+  }
 }
 
 /**
@@ -54,15 +68,34 @@ async function getTerraformDocsVersion(inputVersion) {
   return inputVersion
 }
 
+async function extractTFArchive(pathToCLIFile, platform) {
+  core.debug('Extracting terraform-docs CLI archive')
+  if (platform === 'windows') {
+    const pathToCLI = await tc.extractZip(pathToCLIFile)
+    return pathToCLI
+  }
+  else {
+    const pathToCLI = await tc.extractTar(pathToCLIFile)
+    return pathToCLI
+  }
+}
+
 async function downloadCLI(url) {
   core.debug(`Downloading terraform-docs CLI from ${url}`)
-  const pathToCLIZip = await tc.downloadTool(url)
+  const platform = mapOS(os.platform())
+  const pathToCLIFile = await tc.downloadTool(url)
+  // try {
+  //   if (fs.existsSync(pathToCLIFile)) {
+  //     core.info("Downloaded terraform-docs CLI from ${url}`")
+  //   }
+  // } catch(err) {
+  //   core.error(err)
+  // }
+  const pathToCLI = await extractTFArchive(pathToCLIFile, platform)
 
-  core.debug('Extracting terraform-docs CLI zip file')
-  const pathToCLI = await tc.extractTar(pathToCLIZip)
   core.debug(`terraform-docs CLI path is ${pathToCLI}.`)
 
-  if (!pathToCLIZip || !pathToCLI) {
+  if (!pathToCLIFile || !pathToCLI) {
     throw new Error(`Unable to download terraform-docs from ${url}`)
   }
 
@@ -112,12 +145,13 @@ async function run() {
     const version = await getTerraformDocsVersion(inputVersion)
     const platform = mapOS(os.platform())
     const arch = mapArch(os.arch())
+    const extension = mapExtension(platform)
 
     core.debug(
       `Getting download URL for terraform-docs version ${version}: ${platform} ${arch}`
     )
 
-    const url = `https://github.com/terraform-docs/terraform-docs/releases/download/{version}/terraform-docs-{version}-${platform}-${arch}.tar.gz`
+    const url = `https://github.com/terraform-docs/terraform-docs/releases/download/${version}/terraform-docs-${version}-${platform}-${arch}.${extension}`
 
     const pathToCLI = await downloadCLI(url)
 
