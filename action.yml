@@ -1,7 +1,7 @@
 name: 'Setup terraform-docs'
 description: 'Sets up terraform-docs CLI in your GitHub Actions workflow'
 inputs:
-  tfdocs_version:
+  terraform_docs_version:
     description: terraform-docs version to install
     required: false
     default: latest
