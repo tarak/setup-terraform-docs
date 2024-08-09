@@ -1,0 +1,39 @@
+name: 'Setup terraform-docs'
+description: 'Sets up terraform-docs CLI in your GitHub Actions workflow'
+inputs:
+  tfdocs_version:
+    description: terraform-docs version to install
+    required: false
+    default: latest
+  architecture:
+    description:
+      'Target architecture for Node to use. Examples: x86, x64. Will use system
+      architecture by default.'
+  github_token:
+    description: GitHub token - used when getting the latest version of terraform-docs
+    required: false
+    default:
+      ${{ github.server_url == 'https://github.com' && github.token || '' }}
+  terraform_docs_wrapper:
+    description: Installs a wrapper script to wrap subsequent calls to `terraform-docs` and expose `stdout`, `stderr`, and `exitcode` outputs
+    default: 'false'
+    required: false
+outputs:
+  stdout:
+    description:
+      The output (stdout) produced by the terraform-docs command. Only available if
+      `terraform_docs_wrapper` is set to `true`.
+  stderr:
+    description:
+      The error output (stderr) produced by the terraform-docs command. Only available
+      if `terraform_docs_wrapper` is set to `true`.
+  exitcode:
+    description:
+      The exit code produced by the terraform-docs command. Only available if
+      `terraform_docs_wrapper` is set to `true`.
+runs:
+  using: 'node20'
+  main: dist/index.js
+branding:
+  icon: 'terminal'
+  color: 'purple'
