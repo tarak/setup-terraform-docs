@@ -56,6 +56,11 @@ jobs:
       - name: Test Local Action
         id: test-action
         uses: ./
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate
+        run: terraform-docs -v
 
       # - name: Print Output
       #   id: output
