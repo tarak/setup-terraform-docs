@@ -59,7 +59,7 @@ async function downloadCLI(url) {
   const pathToCLIZip = await tc.downloadTool(url)
 
   core.debug('Extracting terraform-docs CLI zip file')
-  const pathToCLI = await tc.extractZip(pathToCLIZip)
+  const pathToCLI = await tc.extractTar(pathToCLIZip)
   core.debug(`terraform-docs CLI path is ${pathToCLI}.`)
 
   if (!pathToCLIZip || !pathToCLI) {
@@ -116,7 +116,8 @@ async function run() {
     core.debug(
       `Getting download URL for terraform-docs version ${version}: ${platform} ${arch}`
     )
-    const url = `https://github.com/terraform-docs/terraform-docs/releases/download{version}/terraform-docs{version}-${platform}-${arch}.zip`
+
+    const url = `https://github.com/terraform-docs/terraform-docs/releases/download/{version}/terraform-docs-{version}-${platform}-${arch}.tar.gz`
 
     const pathToCLI = await downloadCLI(url)
 
