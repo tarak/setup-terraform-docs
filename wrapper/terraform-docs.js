@@ -7,11 +7,11 @@ const io = require('@actions/io')
 const OutputListener = require('./lib/output-listener')
 const pathToCLI = require('./lib/terraform-docs-bin')
 
-async function checkTFDocs() {
+async function checkTFDocs () {
   // throws if `which` does not find a result
   return io.which(pathToCLI, true)
 }
-/*eslint no-extra-semi: "off"*/
+/* eslint no-extra-semi: "off" */
 ;(async () => {
   // This will fail if terraform-docs isn't found, which is what we want
   await checkTFDocs()

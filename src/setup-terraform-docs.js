@@ -12,7 +12,7 @@ const { Octokit } = require('@octokit/rest')
  * @param {string} arch - https://nodejs.org/api/os.html#os_os_arch
  * @returns {string}
  */
-function mapArch(arch) {
+function mapArch (arch) {
   const mappings = {
     x32: '386',
     x64: 'amd64'
@@ -25,21 +25,21 @@ function mapArch(arch) {
  * @param {string} osPlatform - https://nodejs.org/api/os.html#os_os_platform
  * @returns {string}
  */
-function mapOS(osPlatform) {
+function mapOS (osPlatform) {
   const mappings = {
     win32: 'windows'
   }
   return mappings[osPlatform] || osPlatform
 }
 
-function getOctokit() {
+function getOctokit () {
   return new Octokit({
     auth: core.getInput('github_token'),
     request: { fetch }
   })
 }
 
-async function getTerraformDocsVersion(inputVersion) {
+async function getTerraformDocsVersion (inputVersion) {
   if (!inputVersion || inputVersion === 'latest') {
     core.debug('Requesting for [latest] version ...')
     const octokit = getOctokit()
@@ -54,7 +54,7 @@ async function getTerraformDocsVersion(inputVersion) {
   return inputVersion
 }
 
-async function downloadCLI(url) {
+async function downloadCLI (url) {
   core.debug(`Downloading terraform-docs CLI from ${url}`)
   const pathToCLIZip = await tc.downloadTool(url)
 
@@ -69,14 +69,14 @@ async function downloadCLI(url) {
   return pathToCLI
 }
 
-async function installWrapper(pathToCLI) {
+async function installWrapper (pathToCLI) {
   let source
   let target
 
   // Rename terraform-docs to terraform-docs-bin
   try {
-    source = [pathToCLI, `terraform-docs`].join(path.sep)
-    target = [pathToCLI, `terraform-docs-bin`].join(path.sep)
+    source = [pathToCLI, 'terraform-docs'].join(path.sep)
+    target = [pathToCLI, 'terraform-docs-bin'].join(path.sep)
     core.debug(`Moving ${source} to ${target}.`)
     await io.mv(source, target)
   } catch (e) {
@@ -105,7 +105,7 @@ async function installWrapper(pathToCLI) {
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
-async function run() {
+async function run () {
   try {
     const inputVersion = core.getInput('terraform_docs_version')
     const wrapper = core.getInput('terraform_docs_wrapper') === 'true'
